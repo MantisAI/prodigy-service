@@ -2,29 +2,33 @@ version: '3.6'
 
 services:
 
-  #prodigy:
-  #  build: 
-  #    context: prodigy
-  #    dockerfile: ./Dockerfile
-  #    args:
-  #      PRODIGY_WHEEL: ${PRODIGY_WHEEL}
-  #      SPACY_MODEL_URL: ${SPACY_MODEL_URL}
-  #  image: "989477750762.dkr.ecr.eu-west-1.amazonaws.com/mantisnlp-prodigy:${VERSION}"
-  #  entrypoint: python3 -m prodigy
-  #  volumes:
-  #    - "${PRODIGY_DATA}:/prodigy/data"
-  #    - "${PRODIGY_MODELS}:/prodigy/models"
-  #    - "${PRODIGY_RECIPES}:/prodigy/recipes"
-  #    - "${PRODIGY_HOME}/prodigy.json:/prodigy/prodigy.json:ro"
-  #  ports:
-  #    - 8080:8080
+  prodigy:
+    depends_on:
+      - db
+    build: 
+      context: prodigy
+      dockerfile: ./Dockerfile
+      args:
+        PRODIGY_WHEEL: ${PRODIGY_WHEEL}
+        SPACY_MODEL_URL: ${SPACY_MODEL_URL}
+    image: ${REPO}/${NAME}:${VERSION}
+    volumes:
+      - ${PRODIGY_HOME}/data:/prodigy/data
+      - ${PRODIGY_HOME}/models:/prodigy/models
+      - ${PRODIGY_HOME}/recipes:/prodigy/recipes
+      - ${PRODIGY_HOME}/prodigy.json:/prodigy/prodigy.json:ro
+    ports:
+      - ${LOCAL_PORT}:8080
+    entrypoint: python3 -m prodigy
 
   db:
     image: postgres:12.7-buster
     restart: always
     environment:
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: prodigy
-      POSTGRES_USER: prodigy
+      POSTGRES_USER: ${POSTGRES_USER}
     volumes:
-      - ${PG_DATA}:/var/lib/postgresql/data
+      - ${POSTGRES_DATA}:/var/lib/postgresql/data
+    ports:
+      - 5432:5432

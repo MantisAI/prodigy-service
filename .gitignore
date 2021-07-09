@@ -1,0 +1,3 @@
+prodigy/*.whl
+.env
+.envrc

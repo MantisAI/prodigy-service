@@ -33,6 +33,6 @@ RUN adduser --system prodigy --home /prodigy && \
 
 WORKDIR /prodigy
 
+EXPOSE 8080
+
 ENTRYPOINT ["/bin/bash"]
-
-
