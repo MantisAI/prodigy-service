@@ -11,7 +11,7 @@
 prodigy_wheel := ${PRODIGY_WHEEL}
 prodigy_home := ${PRODIGY_HOME}
 
-prodigy/$(prodigy_wheel):
+prodigy/$(prodigy_wheel): .envrc
 	aws s3 cp ${S3_PATH} $@
 
 .PHONY: $(prodigy_home)/prodigy.json
@@ -22,6 +22,10 @@ $(prodigy_home)/prodigy.json: .envrc
 .PHONY: build
 build: prodigy/$(prodigy_wheel) .envrc
 	docker-compose build
+
+.PHONY: pull
+up: .envrc login
+	sudo docker-compose pull
 
 .PHONY: up
 up: .envrc ${prodigy_home}/prodigy.json
