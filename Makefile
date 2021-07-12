@@ -1,5 +1,4 @@
 
-.PHONY: .envrc
 .envrc: .env
 	direnv dotenv > .envrc
 	-direnv allow
@@ -10,17 +9,27 @@
 #	sed -e "/export/!d" -e "s/export //g" $< > $@ 
 
 prodigy_wheel := ${PRODIGY_WHEEL}
+prodigy_home := ${PRODIGY_HOME}
 
 prodigy/$(prodigy_wheel):
 	aws s3 cp ${S3_PATH} $@
 
+.PHONY: $(prodigy_home)/prodigy.json
+$(prodigy_home)/prodigy.json: .envrc
+	mkdir -p $(@D)
+	cat prodigy.json.template | envsubst > $@
+
 .PHONY: build
-build: prodigy/$(prodigy_wheel)
+build: prodigy/$(prodigy_wheel) .envrc
 	docker-compose build
 
 .PHONY: up
-up:
-	docker-compose up -d up db
+up: .envrc ${prodigy_home}/prodigy.json
+	sudo docker-compose up -d db
+
+.PHONY: down
+down:
+	docker-compose down
 
 #
 # Log in to access ECR repositories

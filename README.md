@@ -9,6 +9,7 @@ A docker-compose file for launching a prodi.gy and connected postgres containers
 * Docker
 * docker-compose
 * direnv (optional, but helpful)
+* envsubst
 * A valid prodigy subscription and access to the prodigy linux wheel
 
 ### Environment variables
@@ -21,34 +22,49 @@ If you use direnv, you can create a `.envrc` from the `.env` file with `make .en
 An .env file should look like:
 
 ```
-# REMOTE tool
-# These are useful when using the REMOTE tool: 
-# https://github.com/wellcometrust/remote
+# REMOTE tool (optional)
+# See https://github.com/wellcometrust/remote
 
-INSTANCE_NAME=<instance name>
+INSTANCE_NAME=XXXXXXXXXXXXXXXXXXXXXXXXX
 FILTER_PREFIX=*
 
-# Docker
+# AWS
 
-VERSION=0.1.0
-REPO=<repo to tag on to docker image>
+NAME=XXXXXXXXXXXXXXXXX
+AWS_PROFILE=default
+AWS_REGION=eu-west-1
+AWS_ACCOUNT_ID=XXXXXXXXXXXX
+S3_BUCKET=s3://XXXXXXXXXXXXXXXXXX
+S3_PATH=${S3_BUCKET}/prodigy/${PRODIGY_WHEEL}
+REPO=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
 
-# Prodigy 
+# Docker / docker-compose envs
 
-PRODIGY_HOME=/opt/prodigy/ # path to local volume mount point
-PRODIGY_WHEEL=<Prodigy wheel (which should be placed in ./prodigy when building the container)
+BASE_TAG=3.8.11-slim-buster
 
-PYTHON_VERSION=3.8.11
-BASE_VERSION=3.0.0
-SPACY_MODEL_URL=https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-${BASE_VERSION}/en_core_web_sm-${BASE_VERSION}.tar.gz
+# Note that to use spaCy 3 you must use prodigy nightly version
 
-# Postgres
+SPACY_VERSION=3.0.0
+SPACY_MODEL_URL=https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-${SPACY_VERSION}/en_core_web_sm-${SPACY_VERSION}.tar.gz
 
-POSTGRES_DATA=<path>
-POSTGRES_PASSWORD=<password>
+# Prodigy
+
+VERSION=1.11.0a8
+PRODIGY_WHEEL=prodigy-${VERSION}-cp36.cp37.cp38.cp39-cp36m.cp37m.cp38.cp39-linux_x86_64.whl
+PRODIGY_HOME=/opt/prodigy
+LOCAL_PORT=1337
+
+# Postgres env vars
+
+POSTGRES_DATA=/data/pg
+POSTGRES_PASSWORD=password
 POSTGRES_USER=prodigy
 PGURL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:5432
 ```
+
+### Prodigy config
+
+Set the username and password values in `.env` file. These will get automatically propagated into the `prodigy.json` file to the folder matching the env var `PRODIGY_HOME`. 
 
 ### Running the containers
 

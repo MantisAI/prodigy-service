@@ -5,15 +5,15 @@
   "batch_size": 10,
   "history_size": 10,
   "port": 8080,
-  "host": "localhost",
+  "host": "0.0.0.0",
   "cors": true,
   "db": "postgresql",
   "db_settings": {
     "postgresql": {
 	"dbname": "prodigy",
-	"user": "*********************************************",
-	"password": "***********",
-	"host": "***********************************"
+	"user": "${POSTGRES_USER}",
+	"password": "${POSTGRES_PASSWORD}",
+	"host": "db"
 	}
   },
   "api_keys": {},
@@ -34,5 +34,5 @@
   "global_css": null,
   "javascript": null,
   "writing_dir": "ltr",
-  "show_whitespace": false,
+  "show_whitespace": false
 }

@@ -1,4 +1,6 @@
-FROM python:3.8.11-slim-buster as base
+ARG BASE_TAG
+
+FROM python:$BASE_TAG as base
 
 from base as builder
 
@@ -17,7 +19,7 @@ ARG SPACY_MODEL_URL
 COPY $PRODIGY_WHEEL ./
 RUN pip install $PRODIGY_WHEEL -t /install --upgrade
 
-# Get en_core_web_sm model from github
+# Get spaCy model from github
 
 RUN pip install $SPACY_MODEL_URL -t /install --upgrade
 

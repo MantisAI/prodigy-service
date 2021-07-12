@@ -11,6 +11,7 @@ services:
       args:
         PRODIGY_WHEEL: ${PRODIGY_WHEEL}
         SPACY_MODEL_URL: ${SPACY_MODEL_URL}
+        BASE_TAG: ${BASE_TAG}
     image: ${REPO}/${NAME}:${VERSION}
     volumes:
       - ${PRODIGY_HOME}/data:/prodigy/data
