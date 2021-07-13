@@ -24,7 +24,7 @@ build: prodigy/$(prodigy_wheel) .envrc
 	docker-compose build
 
 .PHONY: pull
-up: .envrc login
+pull: .envrc login
 	sudo docker-compose pull
 
 .PHONY: up
